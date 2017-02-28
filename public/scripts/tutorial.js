@@ -41,7 +41,6 @@ class CommentList extends React.Component {
       )
     });
 
-
     return (
       <div className="commentList">
         {commentNodes}
@@ -53,13 +52,46 @@ class CommentList extends React.Component {
 class CommentFrom extends React.Component {
   constructor(props) {
     super(props);
+    //初始化state
+    this.state = {
+      author: '',
+      text: ''
+    }
+  }
+
+  handleAuthorChange(e) {
+    this.setState({author: e.target.value});
+  }
+
+  handleTextChange(e) {
+    this.setState({text: e.target.value});
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    let author = this.state.author.trim();
+    let text = this.state.text.trim();
+    if (!author || !text) {
+      return;
+    }
+
+    this.props.onCommentSubmit({author: author, text: text});
+    this.setState({
+      author: '',
+      text: ''
+    })
+
   }
 
   render() {
     return (
-      <div className="commentFrom">
-        Hello, world! I am a CommentFrom.
-      </div>
+      <form className="commentForm" onSubmit={e => this.handleSubmit(e)}>
+        <input type="text" placeholder="Your name" value={this.state.author}
+               onChange={e => this.handleAuthorChange(e)}/>
+        <input type="text" placeholder="Say something..." value={this.state.text}
+               onChange={e => this.handleTextChange(e)}/>
+        <input type="submit" value="Post"/>
+      </form>
     );
   }
 }
@@ -67,6 +99,7 @@ class CommentFrom extends React.Component {
 class CommentBox extends React.Component {
   constructor(props) {
     super(props);
+    //初始化state
     this.state = {data: []};
     //须class中的函数绑定到this，之后单独使用函数时this才能指向正确
     this.loadCommentsFromServer = this.loadCommentsFromServer.bind(this);
@@ -77,6 +110,21 @@ class CommentBox extends React.Component {
       url: this.props.url,
       dataType: 'json',
       cache: false,
+      success: function (data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    })
+  }
+
+  handleCommentSubmit(comment) {
+    $.ajax({
+      url: this.props.url,
+      dataType:'json',
+      type:'post',
+      data:comment,
       success: function (data) {
         this.setState({data: data});
       }.bind(this),
@@ -97,7 +145,7 @@ class CommentBox extends React.Component {
       <div className="commentBox">
         <h1>Comments</h1>
         <CommentList data={this.state.data}/>
-        <CommentFrom/>
+        <CommentFrom onCommentSubmit={comment => this.handleCommentSubmit(comment)}/>
       </div>
     );
   }

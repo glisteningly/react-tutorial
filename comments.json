@@ -15,23 +15,13 @@
         "text": "*abc*"
     },
     {
-        "id": 1464988636500,
-        "author": "ben",
-        "text": "*abc*"
-    },
-    {
-        "id": 1464988717637,
-        "author": "evil",
-        "text": "<a href=\"javascript:alert(1)\">alert(1)</a>"
-    },
-    {
-        "id": 1464988123437,
-        "author": "Mark333",
-        "text": "<a href=\"javascript:alert(1)\">alert(1)</a>"
-    },
-    {
         "id": 1488209175264,
         "author": "AreX",
         "text": "asdwasd123"
+    },
+    {
+        "id": 1488297402299,
+        "author": "dfg",
+        "text": "123dfdfg"
     }
 ]
