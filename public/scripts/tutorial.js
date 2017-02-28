@@ -33,7 +33,7 @@ class CommentList extends React.Component {
   }
 
   render() {
-    let commentNodes = this.props.data.map(function (comment) {
+    let commentNodes = this.props.data.map(comment => {
       return (
         <Comment author={comment.author} key={comment.id}>
           {comment.text}
@@ -67,13 +67,28 @@ class CommentFrom extends React.Component {
 class CommentBox extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {data: []};
+  }
+
+  componentDidMount() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      cache:false,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error:function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    })
   }
 
   render() {
     return (
       <div className="commentBox">
         <h1>Comments</h1>
-        <CommentList data={this.props.data}/>
+        <CommentList data={this.state.data}/>
         <CommentFrom/>
       </div>
     );
@@ -81,6 +96,6 @@ class CommentBox extends React.Component {
 }
 
 ReactDOM.render(
-  <CommentBox data={data}/>,
+  <CommentBox url="/api/comments"/>,
   document.getElementById('content')
 );
