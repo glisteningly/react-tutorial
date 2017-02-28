@@ -68,20 +68,28 @@ class CommentBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {data: []};
+    //须class中的函数绑定到this，之后单独使用函数时this才能指向正确
+    this.loadCommentsFromServer = this.loadCommentsFromServer.bind(this);
   }
 
-  componentDidMount() {
+  loadCommentsFromServer() {
     $.ajax({
       url: this.props.url,
       dataType: 'json',
-      cache:false,
-      success: function(data) {
+      cache: false,
+      success: function (data) {
         this.setState({data: data});
       }.bind(this),
-      error:function(xhr, status, err) {
+      error: function (xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     })
+  }
+
+  componentDidMount() {
+    this.loadCommentsFromServer();
+    //如果上面不进行绑定，此处在setIntervcal中执行loadCommentsFromServer, 会造成this的指向错误
+    setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   }
 
   render() {
@@ -96,6 +104,6 @@ class CommentBox extends React.Component {
 }
 
 ReactDOM.render(
-  <CommentBox url="/api/comments"/>,
+  <CommentBox url="/api/comments" pollInterval={2000}/>,
   document.getElementById('content')
 );
