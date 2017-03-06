@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Immutable测试</title>
+  <!-- Not present in the tutorial. Just for basic styling. -->
+  <link rel="stylesheet" href="css/base.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.8.1/immutable.min.js"></script>
+</head>
+<body>
+<div id="content"></div>
+<script type="text/javascript">
+  let map1 = Immutable.Map({a: 1, b: 2, c: 3});
+  let map2 = map1.set('b', 50);
+  console.log(map1);
+  console.log(map2);
+  console.log("map1.get('b') = " + map1.get('b'));
+  console.log(`map2.get('b') = ${map2.get('b')}`);
+  console.log(`map1 === map2 --- ${map1 === map2}`);
+  console.log(`map1.get('a') --- ${map1.a}`);
+  console.log(`map1.get('a') --- ${map1.get('a')}`);
+  console.log(`map1.a === map2.a --- ${map1.get('a') === map2.get('a')}`);
+  console.log(`map1.b === map2.b --- ${map1.get('b') === map2.get('b')}`);
+
+  let map3 = {a: 1, b: 2, c: 3};
+  console.log(map3);
+
+  let data = Immutable.fromJS({a: {b: {c: 1}}});
+  let cursor = Immutable.Cursor.from(data, ['a', 'b'], newData => {
+    console.log(newData);
+  })
+
+  cursor.get('c');
+  cursor = cursor.update('c', x => x + 1);
+  cursor.get('c');
+
+</script>
+</body>
+</html>

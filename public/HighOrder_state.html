@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>高阶组件</title>
+  <!-- Not present in the tutorial. Just for basic styling. -->
+  <link rel="stylesheet" href="css/base.css"/>
+  <script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+  <script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+  <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+  <script src="https://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
+</head>
+<body>
+<div id="content"></div>
+<script type="text/babel">
+  const MyContainer = (WrappedComponent) =>
+    class extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          name: '',
+        };
+
+        this.onNameChange = this.onNameChange.bind(this);
+      }
+
+      onNameChange(event) {
+        this.setState({
+          name: event.target.value,
+        })
+      }
+
+      render() {
+        const newProps = {
+          name: {
+            value: this.state.name,
+            onChange: this.onNameChange,
+          }
+        }
+        return <WrappedComponent {...this.props} {...newProps}/>
+      }
+    }
+
+  @MyContainer
+  class MyComponent extends React.Component{
+    render(){
+      return <input name="name" {...this.props.name} />
+    }
+  }
+
+  ReactDOM.render(
+    <MyComponent type="text"/>,
+    document.getElementById('content')
+  );
+</script>
+</body>
+</html>
